@@ -31,15 +31,26 @@
               "node_modules/font-mfizz/dist/font-mfizz.css",
               "node_modules/highlight.js/styles/github.css",
               "node_modules/codemirror/lib/codemirror.css",
-              "node_modules/codemirror/theme/dracula.css",
-              "node_modules/ngx-spinner/animations/timer.css"
+              "node_modules/codemirror/theme/dracula.css"
             ],
             "allowedCommonJsDependencies": [
               "jwt-decode",
               "file-saver",
               "socket.io-client",
               "socket.io-parser",
-              "debug"
+              "debug",
+              "qrious",
+              "diff-match-patch",
+              "codemirror",
+              "bn.js",
+              "aes-js",
+              "scrypt-js",
+              "bech32",
+              "hash.js",
+              "eventemitter3",
+              "ethers/lib/ethers",
+              "ethers/lib/utils",
+              "js-sha3"
             ],
             "scripts": [],
             "aot": false,

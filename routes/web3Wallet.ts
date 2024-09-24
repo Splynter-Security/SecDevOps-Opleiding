@@ -1,9 +1,9 @@
 import { type Request, type Response } from 'express'
 import challengeUtils = require('../lib/challengeUtils')
 import * as utils from '../lib/utils'
+import { challenges } from '../data/datacache'
 const web3WalletABI = require('../data/static/contractABIs').web3WalletABI
 const ethers = require('ethers')
-const challenges = require('../data/datacache').challenges
 const web3WalletAddress = '0x413744D59d31AFDC2889aeE602636177805Bd7b0'
 const walletsConnected = new Set()
 let isEventListenerCreated = false
@@ -13,7 +13,7 @@ module.exports.contractExploitListener = function contractExploitListener () {
     const metamaskAddress = req.body.walletAddress
     walletsConnected.add(metamaskAddress)
     try {
-      const provider = new ethers.WebSocketProvider('wss://sepolia.infura.io/ws/v3/0b88ff4d03a647b8a4649e9bfdf6644f')
+      const provider = new ethers.WebSocketProvider('wss://eth-sepolia.g.alchemy.com/v2/FZDapFZSs1l6yhHW4VnQqsi18qSd-3GJ')
       const contract = new ethers.Contract(web3WalletAddress, web3WalletABI, provider)
       if (!isEventListenerCreated) {
         contract.on('ContractExploited', (exploiter: string) => {

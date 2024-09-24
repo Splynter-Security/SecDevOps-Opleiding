@@ -1,20 +1,19 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core'
+import { Component, ChangeDetectorRef } from '@angular/core'
 import { KeysService } from '../Services/keys.service'
 import { SnackBarHelperService } from '../Services/snack-bar-helper.service'
-import { getDefaultProvider, ethers, BigNumber } from 'ethers'
+import { getDefaultProvider, ethers } from 'ethers'
 import {
   createClient,
   connect,
   disconnect,
   getAccount,
-  signMessage,
   InjectedConnector
 } from '@wagmi/core'
 import {
-  solidityCompiler,
-  getCompilerVersions
+  solidityCompiler
 } from 'solidity-browser-compiler'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const client = createClient({
   autoConnect: true,
   provider: getDefaultProvider()
@@ -112,10 +111,7 @@ contract HelloWorld {
 
   async deploySelectedContract () {
     if (!this.session) {
-      this.snackBarHelperService.open(
-        'Please connect your web3 wallet first.',
-        'errorBar'
-      )
+      this.snackBarHelperService.open('PLEASE_CONNECT_WEB3_WALLET', 'errorBar')
       return
     }
     try {
@@ -184,10 +180,7 @@ contract HelloWorld {
 
   async invokeFunction (func) {
     if (!this.session) {
-      this.snackBarHelperService.open(
-        'Please connect your web3 wallet first.',
-        'errorBar'
-      )
+      this.snackBarHelperService.open('PLEASE_CONNECT_WEB3_WALLET', 'errorBar')
       return
     }
     try {
@@ -268,10 +261,7 @@ contract HelloWorld {
         await disconnect()
       }
       if (!window.ethereum) {
-        this.snackBarHelperService.open(
-          'Please install a Web3 Wallet like Metamask to proceed.',
-          'errorBar'
-        )
+        this.snackBarHelperService.open('PLEASE_INSTALL_WEB3_WALLET', 'errorBar')
         return
       }
 
@@ -303,10 +293,7 @@ contract HelloWorld {
 
       if (provider && currentChainId !== targetChainId) {
         this.session = false
-        this.snackBarHelperService.open(
-          'Please connect to the Sepolia Network',
-          'errorBar'
-        )
+        this.snackBarHelperService.open('PLEASE_CONNECT_TO_SEPOLIA_NETWORK', 'errorBar')
       } else {
         console.log('Should show ethereum chain now')
         this.session = true
