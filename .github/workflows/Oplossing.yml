@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - Master
+      - main
     paths-ignore:
       - '*.md'
       - 'LICENSE'
