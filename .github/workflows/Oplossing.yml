@@ -70,7 +70,7 @@ jobs:
       - name: curl
         run: "curl -X POST -H 'X-Api-Key: ${{secrets.SECRET_OWASP_DT_KEY}}' -F 'project=48ee37bb-1dd0-477c-8291-6b252759b513' -F 'bom=@sbom.json' https://dependency.portasecura.com/api/v1/bom"
   DAST:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
         - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0   
         - name: Install Heroku CLI # <- IMPORTANT!!! Make sure the cli is installed before using the action
