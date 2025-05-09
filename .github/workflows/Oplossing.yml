@@ -57,11 +57,13 @@ jobs:
   heroku:
     runs-on: ubuntu-latest
     steps:
-        - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0
-        - uses: 5hojib/heroku-deploy-action@v2 #v3.12.14
+        - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0  
+        - name: Install Heroku CLI # <- IMPORTANT!!! Make sure the cli is installed before using the action
+          run: |
+            curl https://cli-assets.heroku.com/install.sh | sh 
+        - uses: akhileshns/heroku-deploy@v3.14.15 # This is the action
           with:
-            heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+            heroku_api_key: ${{secrets.HEROKU_API_KEY}}
             heroku_app_name: ${{ env.HEROKU_APP }}
             heroku_email: mboeynaems@outlook.com
-
     
