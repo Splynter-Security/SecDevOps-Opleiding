@@ -69,7 +69,7 @@ jobs:
       - name: curl
         uses: sozo-design/curl@v1.0.2
         with:
-          args: -X POST -H "X-Api-Key: ${{SECRET_OWASP_DT_KEY}}" -F "project=48ee37bb-1dd0-477c-8291-6b252759b513" -F "bom=@sbom.json" https://dependency.portasecura.com/api/v1/bom
+          args: "-X POST -H 'X-Api-Key: ${{secrets.SECRET_OWASP_DT_KEY}}' -F 'project=48ee37bb-1dd0-477c-8291-6b252759b513' -F 'bom=@sbom.json' https://dependency.portasecura.com/api/v1/bom"
   DAST:
     runs-on: ubuntu-latest
     steps:
