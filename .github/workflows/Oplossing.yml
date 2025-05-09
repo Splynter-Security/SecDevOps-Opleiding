@@ -63,20 +63,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-      - name: Generates BoM and upload to OWASP DTrack
-        id: riskscoreFromDT
-        uses:  Quobis/action-owasp-dependecy-track-check@main
+      - name: Create SBOM step
+  # see for usage: https://www.npmjs.com/package/%40cyclonedx/cyclonedx-npm
+        run: npx @cyclonedx/cyclonedx-npm --of JSON -o sbom.json -v package.json
+      - name: curl
+        uses: sozo-design/curl@v1.0.2
         with:
-          url: 'https://dependency.portasecura.com/'
-          key: '${{ secrets.SECRET_OWASP_DT_KEY }}'
-          language: 'nodejs'
-  heroku:
+          args: -X POST -H "X-Api-Key: ${{SECRET_OWASP_DT_KEY}}" -F "project=48ee37bb-1dd0-477c-8291-6b252759b513" -F "bom=@sbom.json" https://dependency.portasecura.com/api/v1/bom
+  DAST:
     runs-on: ubuntu-latest
     steps:
         - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0   
         - uses: behe/heroku-build@v1 # This is the action
           with:
-            app-name: ${{ env.HEROKU_APP }}
+            app-name: ${{env.HEROKU_APP}}
             api-key: ${{secrets.HEROKU_API_KEY}}
             
     
