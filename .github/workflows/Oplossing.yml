@@ -1,9 +1,9 @@
 name: "Oplossing"
 on:
   push:
-    branches:
-      - Master
-      - main
+    branches-ignore:
+      - l10n_develop
+      - gh-pages
     paths-ignore:
       - '*.md'
       - 'LICENSE'
