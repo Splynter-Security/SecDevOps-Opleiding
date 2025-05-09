@@ -77,7 +77,7 @@ jobs:
         - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0   
         - uses: behe/heroku-build@v1 # This is the action
           with:
-            app-name: ${{env.HEROKU_APP}}
+            app-name: testglenn
             api-key: ${{secrets.HEROKU_API_KEY}}
             
     
