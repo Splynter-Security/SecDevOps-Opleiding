@@ -38,7 +38,7 @@ jobs:
       - name: curl
         run: "curl -X POST -H 'X-Api-Key: ${{secrets.SECRET_OWASP_DT_KEY}}' -F 'project=48ee37bb-1dd0-477c-8291-6b252759b513' -F 'bom=@sbom.json' https://dependency.portasecura.com/api/v1/bom"
   SAST:
-    # needs: [SCA]
+    needs: [SCA]
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -64,26 +64,26 @@ jobs:
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
 
-  # DAST:
-  #  needs: [SAST]
-  #  runs-on: ubuntu-22.04
-  #  steps:
-  #      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0   
-  #      - name: Install Heroku CLI # <- IMPORTANT!!! Make sure the cli is installed before using the action
-  #        run: |
-  #          curl https://cli-assets.heroku.com/install.sh | sh 
-  #      - uses: akhileshns/heroku-deploy@v3.14.15 # This is the action
-  #        with:
-  #          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-  #          heroku_app_name: "testglenn" #Must be unique in Heroku
-  #          heroku_email: "mboeynaems@outlook.com"
-  #      - name: DAST OWASP ZAP scan
-  #        uses: zaproxy/action-full-scan@v0.12.0
-  #        with:
-    # Target URL
-  #          target: https://testglenn-8a31421a27d4.herokuapp.com/#/
-  Secrets_management:
+  DAST:
     needs: [SAST]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0   
+      - name: Install Heroku CLI # <- IMPORTANT!!! Make sure the cli is installed before using the action
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh 
+      - uses: akhileshns/heroku-deploy@v3.14.15 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "testglenn" #Must be unique in Heroku
+          heroku_email: "mboeynaems@outlook.com"
+      - name: DAST OWASP ZAP scan
+        uses: zaproxy/action-full-scan@v0.12.0
+        with:
+    # Target URL
+          target: https://testglenn-8a31421a27d4.herokuapp.com/#/
+  Secrets_management:
+    needs: [DAST]
     runs-on: ubuntu-latest
     permissions: 
       contents: read 
