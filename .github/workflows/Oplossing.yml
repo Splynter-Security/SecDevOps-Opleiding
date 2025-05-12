@@ -58,7 +58,8 @@ jobs:
         config: |
           paths-ignore:
             - 'data/static/codefixes'
-        build-mode: autobuild
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v2
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
   DAST:
@@ -99,13 +100,13 @@ jobs:
           cache: 'npm'
       - name: TruffleHog OSS 
         id: trufflehog 
-        uses: trufflesecurity/trufflehog@add-actions-cli-switch 
+        uses: trufflesecurity/trufflehog@main
         continue-on-error: true 
         with: 
           path: ./ 
           base: "${{ github.event.repository.default_branch }}" 
           head: HEAD 
-          extra_args: --debug --only-verified
+          extra_args: --results=verified,unknown
 
             
     
