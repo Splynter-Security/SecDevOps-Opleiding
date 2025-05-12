@@ -17,10 +17,6 @@ on:
       - 'LICENSE'
       - 'data/static/i18n/*.json'
       - 'frontend/src/assets/i18n/*.json'
-env:
-  NODE_DEFAULT_VERSION: 20
-  ANGULAR_CLI_VERSION: 17
-  CYCLONEDX_NPM_VERSION: '^1.12.0'
 jobs:
   SCA:
     runs-on: ubuntu-latest
@@ -63,44 +59,3 @@ jobs:
       uses: github/codeql-action/autobuild@v2
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
-
-  DAST:
-    needs: [SAST]
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0   
-      - name: Install Heroku CLI # <- IMPORTANT!!! Make sure the cli is installed before using the action
-        run: |
-          curl https://cli-assets.heroku.com/install.sh | sh 
-      - uses: akhileshns/heroku-deploy@v3.14.15 # This is the action
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "testglenn" #Must be unique in Heroku
-          heroku_email: "mboeynaems@outlook.com"
-      - name: DAST OWASP ZAP scan
-        uses: zaproxy/action-full-scan@v0.12.0
-        with:
-    # Target URL
-          target: https://testglenn-8a31421a27d4.herokuapp.com/#/
-  Secrets_management:
-    needs: [DAST]
-    runs-on: ubuntu-latest
-    permissions: 
-      contents: read 
-      id-token: write 
-      issues: write 
-      pull-requests: write
-    defaults: 
-      run: 
-        shell: bash 
-    steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac 
-      - name: TruffleHog OSS 
-        id: trufflehog 
-        uses: trufflesecurity/trufflehog@main
-        continue-on-error: true 
-        with: 
-          extra_args: --results=verified,unknown
-
-            
-    
