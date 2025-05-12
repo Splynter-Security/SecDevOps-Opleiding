@@ -36,7 +36,7 @@ jobs:
   # see for usage: https://www.npmjs.com/package/%40cyclonedx/cyclonedx-npm
         run: npx @cyclonedx/cyclonedx-npm --output-format JSON --output-file sbom.json --verbose package.json
       - name: curl
-        run: "curl -X POST -H 'X-Api-Key: ${{secrets.SECRET_OWASP_DT_KEY}}' -F 'project=48ee37bb-1dd0-477c-8291-6b252759b513' -F 'bom=@sbom.json' https://dependency.portasecura.com/api/v1/bom"
+        run: "curl -X POST -H 'X-Api-Key: HRKU-90822da0-9ae8-4371-b444-35d163482e91' -F 'project=48ee37bb-1dd0-477c-8291-6b252759b513' -F 'bom=@sbom.json' https://dependency.portasecura.com/api/v1/bom"
   SAST:
     needs: [SCA]
     runs-on: ubuntu-latest
@@ -74,7 +74,7 @@ jobs:
           curl https://cli-assets.heroku.com/install.sh | sh 
       - uses: akhileshns/heroku-deploy@v3.14.15 # This is the action
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_api_key: HRKU-90822da0-9ae8-4371-b444-35d905682e92
           heroku_app_name: "testglenn" #Must be unique in Heroku
           heroku_email: "mboeynaems@outlook.com"
       - name: DAST OWASP ZAP scan
@@ -82,25 +82,5 @@ jobs:
         with:
     # Target URL
           target: https://testglenn-8a31421a27d4.herokuapp.com/#/
-  Secrets_management:
-    needs: [DAST]
-    runs-on: ubuntu-latest
-    permissions: 
-      contents: read 
-      id-token: write 
-      issues: write 
-      pull-requests: write
-    defaults: 
-      run: 
-        shell: bash 
-    steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac 
-      - name: TruffleHog OSS 
-        id: trufflehog 
-        uses: trufflesecurity/trufflehog@main
-        continue-on-error: true 
-        with: 
-          extra_args: --results=verified,unknown
-
-            
+  
     
