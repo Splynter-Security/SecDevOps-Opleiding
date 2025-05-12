@@ -38,6 +38,7 @@ jobs:
       - name: curl
         run: "curl -X POST -H 'X-Api-Key: ${{secrets.SECRET_OWASP_DT_KEY}}' -F 'project=48ee37bb-1dd0-477c-8291-6b252759b513' -F 'bom=@sbom.json' https://dependency.portasecura.com/api/v1/bom"
   SAST:
+    # needs: [SCA]
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -63,7 +64,7 @@ jobs:
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
   DAST:
-    #needs: [SCA, SAST]
+    needs: [SAST]
     runs-on: ubuntu-22.04
     steps:
         - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0   
@@ -81,7 +82,7 @@ jobs:
     # Target URL
             target: https://testglenn-8a31421a27d4.herokuapp.com/#/
   Secrets_management:
-    # needs: [DAST]
+    needs: [DAST]
     runs-on: ubuntu-latest
     permissions: 
       contents: read 
@@ -92,12 +93,7 @@ jobs:
       run: 
         shell: bash 
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac 
       - name: TruffleHog OSS 
         id: trufflehog 
         uses: trufflesecurity/trufflehog@main
