@@ -37,6 +37,30 @@ jobs:
         run: npx @cyclonedx/cyclonedx-npm --output-format JSON --output-file sbom.json --verbose package.json
       - name: curl
         run: "curl -X POST -H 'X-Api-Key: ${{secrets.SECRET_OWASP_DT_KEY}}' -F 'project=48ee37bb-1dd0-477c-8291-6b252759b513' -F 'bom=@sbom.json' https://dependency.portasecura.com/api/v1/bom"
+  SAST:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript-typescript' ]
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
+        queries: security-extended
+        config: |
+          paths-ignore:
+            - 'data/static/codefixes'
+        build-mode: autobuild
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
   DAST:
     #needs: [SCA, SAST]
     runs-on: ubuntu-22.04
@@ -48,12 +72,43 @@ jobs:
         - uses: akhileshns/heroku-deploy@v3.14.15 # This is the action
           with:
             heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-            heroku_app_name: "secdevops2" #Must be unique in Heroku
+            heroku_app_name: "testglenn" #Must be unique in Heroku
             heroku_email: "mboeynaems@outlook.com"
         - name: DAST OWASP ZAP scan
           uses: zaproxy/action-full-scan@v0.12.0
           with:
     # Target URL
             target: https://testglenn-8a31421a27d4.herokuapp.com/#/
+  Secrets_management:
+    # needs: [DAST]
+    runs-on: ubuntu-latest
+    permissions: 
+      contents: read 
+      id-token: write 
+      issues: write 
+      pull-requests: write
+    defaults: 
+      run: 
+        shell: bash 
+    steps:
+      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: TruffleHog OSS 
+        id: trufflehog 
+        uses: trufflesecurity/trufflehog@add-actions-cli-switch 
+        continue-on-error: true 
+        with: 
+          path: ./ 
+          base: "${{ github.event.repository.default_branch }}" 
+          head: HEAD 
+          extra_args: --debug --only-verified
+      - name: Scan Results Status 
+        if: steps.trufflehog.outcome == 'failure' 
+          run: exit 1
+
             
     
