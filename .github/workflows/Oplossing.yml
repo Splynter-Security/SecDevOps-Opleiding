@@ -39,7 +39,7 @@ jobs:
         run: "curl -X POST -H 'X-Api-Key: ${{secrets.SECRET_OWASP_DT_KEY}}' -F 'project=48ee37bb-1dd0-477c-8291-6b252759b513' -F 'bom=@sbom.json' https://dependency.portasecura.com/api/v1/bom"
   
   SAST:
-    needs: [SCA]
+    #needs: [SCA]
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -66,7 +66,7 @@ jobs:
       uses: github/codeql-action/analyze@v3
 
   DAST:
-    needs: [SAST]
+    #needs: [SAST]
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0   
@@ -85,7 +85,7 @@ jobs:
           target: https://testglenn-8a31421a27d4.herokuapp.com/#/
           
   Secrets_management:
-    needs: [DAST]
+    #needs: [DAST]
     runs-on: ubuntu-latest
     permissions: 
       contents: read 
@@ -105,14 +105,13 @@ jobs:
           extra_args: --results=verified,unknown
 
   provenance:
-    needs: [Secrets_management]
+    needs: [SCA]
     permissions:
-      actions: read
       id-token: write
       contents: write
-    # Can't pin with hash due to how this workflow works.
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0
+    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_file_based_slsa3.yml@v2.1.0
     with:
+      artifacts: sbom.json
       upload-assets: false
-            
-    
+              
+      
