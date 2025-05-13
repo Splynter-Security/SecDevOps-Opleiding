@@ -103,15 +103,3 @@ jobs:
         continue-on-error: true 
         with: 
           extra_args: --results=verified,unknown
-
-  provenance:
-    needs: [SCA]
-    permissions:
-      id-token: write
-      contents: write
-    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_file_based_slsa3.yml@v2.1.0
-    with:
-      artifacts: sbom.json
-      upload-assets: false
-              
-      
