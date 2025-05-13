@@ -101,17 +101,6 @@ jobs:
         continue-on-error: true 
         with: 
           extra_args: --results=verified,unknown
-  provenance:
-    needs: [Secrets_management]
-    permissions:
-      id-token: write # Required for signing
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0
-        with:
-          upload-assets: false
 
 
             
